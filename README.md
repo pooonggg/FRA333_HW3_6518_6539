@@ -115,7 +115,7 @@ def checkSingularityHW3(q:list[float])->bool:
 ```
 โดยนำค่า Jacobian ที่ได้จากข้อที่ 1 มาทำการลดรูปให้เหลือแค่ในส่วนของ linear velocity เพื่อนำมาคำนวณหา det และทำการหา norm โดยได้ Function np.linalg.det และ np.linalg.norm ตามลำดับ และ check ค่า singularity โดยการกำหนดขอบเขตโดยใช้  _ε_ เป็นตัวกำหนดขอบเขต
 ### **วิธีการตรวจสอบข้อที่ 2**
-สร้าง q_list มาตรวจ check ว่าเป็น singularity หรือไม่
+สร้าง q_list กำหนดให้ 3 ตัวแรกเป็น q ที่ทำให้หุ่นอยู่ในสภาวะปกติและตัวที่เหลือคือค่าที่อยู่ใกล้สภาวะ singularity มาตรวจ check ว่าเป็น singularity หรือไม่ โดยทำการ check โดยใช้ abs ใน numpy มาเช็คค่า norm แล้วทำการกำหนดขอบเขตเช่นเดิม
 ```py
 q_list = [
         [0.0, -pi/4, -pi/4],
