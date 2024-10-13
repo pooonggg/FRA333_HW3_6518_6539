@@ -115,9 +115,48 @@ def checkSingularityHW3(q:list[float])->bool:
 ```
 โดยนำค่า Jacobian ที่ได้จากข้อที่ 1 มาทำการลดรูปให้เหลือแค่ในส่วนของ linear velocity เพื่อนำมาคำนวณหา det และทำการหา norm โดยได้ Function np.linalg.det และ np.linalg.norm ตามลำดับ และ check ค่า singularity โดยการกำหนดขอบเขตโดยใช้  _ε_ เป็นตัวกำหนดขอบเขต
 ### **วิธีการตรวจสอบข้อที่ 2**
+สร้าง q_list มาตรวจ check ว่าเป็น singularity หรือไม่
+```py
+q_list = [
+        [0.0, -pi/4, -pi/4],
+        [0.0, pi/4, pi/2],
+        [0.0, 0.0, -pi/2],
+        [-0.24866892, 0.22598268, -0.19647569],
+        [-1.74, -1.06, -1.15],
+        [0.0 , -pi/2 , -0.2]
+    ]
+    
+    print(f"{'Configuration':<15} {'คำนวณเอง':<15} {'Robotics Toolbox':<20} {'Singularity Value (คำนวณเอง)':<30} {'Singularity Value (RTB)':<30}")
+    print("-" * 110)
+    
+    for i, q in enumerate(q_list):
+        # Check singularity using custom function
+        flag_custom = checkSingularityHW3(q)
+        J_custom = endEffectorJacobianHW3(q)
+        J_custom_linear = J_custom[:3, :]  # Extract linear velocity components
+        S_custom = abs(np.linalg.det(J_custom_linear))  # Calculate determinant
+
+        # Check singularity using Robotics Toolbox
+        J_rtb = robot.jacobe(q)
+        J_rtb_linear = J_rtb[:3, :]  # Extract linear velocity components
+        S_rtb = abs(np.linalg.det(J_rtb_linear))  # Calculate determinant
+        flag_rtb = 1 if S_rtb < 0.001 else 0  # Threshold for singularity detection
+```
 ### ผลลัพธ์ที่ได้เมื่อเทียบกัน
 ```py
+ตรวจคำตอบข้อ 2: ตรวจสอบ Singularity
+==================================================
+Configuration   คำนวณเอง        Robotics Toolbox     Singularity Value (คำนวณเอง)   Singularity Value (RTB)       
+--------------------------------------------------------------------------------------------------------------
+Config 1         0               0                    0.045108                       0.045108
+Config 2         0               0                    0.020307                       0.020307
+Config 3         0               0                    0.104446                       0.104446
+Config 4         1               1                    0.000529                       0.000529
+Config 5         1               1                    0.000103                       0.000103
+Config 6         1               1                    0.000004                       0.000004
+
 ```
+จากผลลัพธ์ที่ได้เมื่อเทียบกับทั้งสอง Function มีผลลัพธ์ที่ตรงกัน
 ## **คำถามข้อที่ 3**
 จงเขียนฟังก์ชั่นในการหา effort ของแต่ละข้อต่อเมื่อมี wrench มากระทำกับจุดกึ่งกลางของเฟรมพิกัด Fe
 คำนวณหา effort จากสูตร 
@@ -141,6 +180,39 @@ def computeEffortHW3(q:list[float], w:list[float])->list[float]:
 ```
 ทำการหา Torque โดยใช้จาก Function ข้อที่ 1 มาทำการ Transpose หลังจากนั้นนำมาคูณกับค่า wrench ที่กำหนดไว้เพื่อหา Torque
 ### **วิธีการตรวจสอบข้อที่ 3**
+ใช้ Function ใน roboticstoolbox เพื่อทำการตรวจสอบว่าค่า Force จากการคำนวณย้อนกลับนั้นตรงกับค่า Force ใน Wrench ที่กำหนดหรือไม่
+```py
+effort_custom = computeEffortHW3(q_init, w_init)
+    J = robot.jacobe(q_init)
+    effort_rtb = robot.pay(W=w_init, J=J)  # Use pay() method for inverse dynamics
+
+    print("Joint Efforts:")
+    print(f"{'Joint':<10} {'คำนวณเอง':<15} {'Robotics Toolbox':<20}")
+    print("-" * 45)
+    for i in range(3):
+        print(f"Joint {i+1:<5} {effort_custom[i]:15.4f} {effort_rtb[i]:20.4f}")
+
+    def calc_forces(effort):
+        """
+        Calculate end-effector forces from joint efforts.
+        
+        Args:
+        effort (list): Joint efforts
+        
+        Returns:
+        list: Calculated end-effector forces
+        
+        This function uses the robot's geometry to convert joint efforts to end-effector forces.
+        """
+        return [
+            effort[0] / (a2 + a3 + d6),  # Force in x-direction
+            effort[1] / (a2 + a3 + d6),  # Force in y-direction
+            effort[2] / (a3 + d6)        # Force in z-direction
+        ]
+
+    forces_custom = calc_forces(effort_custom)
+    forces_rtb = calc_forces(effort_rtb)
+```
 ### ผลลัพธ์ที่ได้เมื่อเทียบกัน
 ```py
 ตรวจคำตอบข้อ 3: คำนวณ Effort และแรงที่ปลายมือ
