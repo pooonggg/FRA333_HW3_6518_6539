@@ -25,7 +25,7 @@ def endEffectorJacobianHW3(q:list[float])->list[float]:
         p_i = P[:,i]
         z = R[:,2,i] # เอาแค่ Rotation ของ Z มาใช้
         J[:3,i] = (np.cross(z,(p_e - p_i))) @ R_e # linear velocity
-        J[3:,i] = z # angular velocity
+        J[3:,i] = z @ R_e# angular velocity
         
     return J
 
@@ -60,10 +60,10 @@ def computeEffortHW3(q:list[float], w:list[float])->list[float]:
     # คำนวณ Jacobian Transpose
     J_T = np.transpose(J)
     # คำนวณค่า torque สำหรับข้อต่อ
-    tau = J_T @ w  
+    tau = -J_T @ w  
     return tau
 #==============================================================================================================#
-endEffectorJacobianHW3(q_i)
-flag = checkSingularityHW3(q_singular)
-tau = computeEffortHW3(q_i,w)
-print(tau)
+# endEffectorJacobianHW3(q_i)
+# flag = checkSingularityHW3(q_singular)
+# tau = computeEffortHW3(q_i,w)
+# print(tau)
