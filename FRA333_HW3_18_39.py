@@ -60,7 +60,7 @@ def computeEffortHW3(q:list[float], w:list[float])->list[float]:
     # คำนวณ Jacobian Transpose
     J_T = np.transpose(J)
     # คำนวณค่า torque สำหรับข้อต่อ
-    tau = -J_T @ w  
+    tau = J_T @ w  
     return tau
 #==============================================================================================================#
 # endEffectorJacobianHW3(q_i)

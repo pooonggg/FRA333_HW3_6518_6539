@@ -68,11 +68,11 @@ def analyze_robot():
     # List of joint configurations to check for singularities
     q_list = [
         [0.0, -pi/4, -pi/4],
-        [0.0, 0.0, -pi/2],
         [0.0, pi/4, pi/2],
-        [-1.91970470e-15, -8.35883143e-01, 2.80232546e+00],
-        [-0.24866892, 0.22598268, -0.19647569],
-        [1.70275090e-17, -1.71791355e-01, -1.95756090e-01]
+        [0.0, 0.0, -pi/2],
+        [2.62, -2.78, 2.44],
+        [-1.74, -1.06, -1.15],
+        [1.34, 0.28, -1.45]
     ]
     
     print(f"{'Configuration':<15} {'คำนวณเอง':<15} {'Robotics Toolbox':<20} {'Singularity Value (คำนวณเอง)':<30} {'Singularity Value (RTB)':<30}")
