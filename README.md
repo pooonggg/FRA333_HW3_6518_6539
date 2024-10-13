@@ -24,15 +24,29 @@
 | d_6   | 0.082      |
 
 สร้าง MDH Parameters โดยใช้ roboticstoolbox
+```py
+robot = DHRobot([
+        RevoluteMDH(alpha=0, a=0, d=d1, offset=pi),
+        RevoluteMDH(alpha=pi/2, a=0, d=0, offset=0),
+        RevoluteMDH(alpha=0, a=-a2, d=0, offset=0)
+    ], name="3DOF_Robot", tool=SE3([
+        [0, 0, -1, -(a3 + d6)],
+        [0, 1, 0, -d5],
+        [1, 0, 0, d4],
+        [0, 0, 0, 1]
+    ]))
+``` 
+กำหนดค่า q_i ที่ใช้สำหรับการสร้างมุมของแต่ละข้อต่อ
+```py
+q_init = [0.0, 0.0, 0.0]  # Initial joint configuration (all joints at 0 position)
+``` 
 
-กำหนดค่า q ที่ใช้สำหรับการสร้างมุมของแต่ละข้อต่อ
-
-Check ค่าที่ได้จากการทำ Forward Kinematics โดยใช้ Function FKHW3 ตรงกับ การใช้ roboticstoolbox หรือไม่
-#### ผลลัพธ์ที่ได้จาก FKHW3 เทียบกับ roboticstoolbox
-
-จากผลลัพธ์ที่ได้นั้นเราสามารถใช้ FK
 ## **คำถามข้อที่ 1**
 จงเขียนฟังก์ชั่นในการ Jacobian ของหุ่นยนต์ตัวนี้ให้อยู่ในฟังก์ชั่นต่อไปนี้ J_e = endEffectorJacobianHW3(q)
+Function Jacobian คำนวณได้จาก
+
+
+
 ### **วิธีการตรวจสอบข้อที่ 1**
 ## **คำถามข้อที่ 2**
 จงเขียนฟังก์ชั่นในการหาสภาวะ Singularity โดยที่ _∣∣det(J(q))∣∣ < ε_ เมื่อให้ค่า _ε_ = 0.001 และ _J*(.)_ คือเมตริกซ์จาโคเบียนที่ถูกลดรูปแล้ว
