@@ -137,5 +137,5 @@ def computeEffortHW3(q:list[float], w:list[float])->list[float]:
     tau = J_T @ w  
     return tau
 ```
-
+ทำการหา Torque โดยใช้จาก Function ข้อที่ 1 มาทำการ Transpose หลังจากนั้นนำมาคูณกับค่า wrench ที่กำหนดไว้เพื่อหา Torque
 ### **วิธีการตรวจสอบข้อที่ 3**
